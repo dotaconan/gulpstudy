@@ -1,0 +1,80 @@
+@charset "utf-8";
+.lessTransform(@lessTransform:scale(1)) {
+  -webkit-transform: @lessTransform;
+  -moz-transform: @lessTransform;
+  -ms-transform: @lessTransform;
+  -o-transform: @lessTransform;
+  transform: @lessTransform;
+}
+
+.lessTransition(@lessTransition:all 0.3s ease) {
+  -webkit-transition: @lessTransition;
+  -moz-transition: @lessTransition;
+  -ms-transition: @lessTransition;
+  -o-transition: @lessTransition;
+  transition: @lessTransition;
+}
+
+//animation:[<animation-name> || <animation-duration> || <animation-timing-function> || <animation-delay> || <animation-iteration-count> || <animation-direction>] ]
+
+.lessAnimation(@animation-name,@animation-duration,@animation-timing-function,@animation-delay,@animation-iteration-count,@animation-direction) {
+  animation: @arguments;
+  -moz-animation: @arguments;
+  -ms-animation: @arguments;
+  -webkit-animation: @arguments;
+  -o-animation: @arguments;
+}
+
+//循环构建构建 ml10-ml100
+.createML (@value) when (@value > 0) {
+  .ml@{value} {
+    margin-left: ~"@{value}px";
+  }
+  // 递归
+  .createML(@value - 5);
+}
+
+//.createML(100);
+//循环构建构建 mr10-mr100
+.createMR (@value) when (@value > 0) {
+  .mr@{value} {
+    margin-right: ~"@{value}px";
+  }
+  // 递归
+  .createMR(@value - 5);
+}
+
+//.createMR(100);
+//动态创建keyframe
+#createKeyFrames(@name; @frames) {
+  @-webkit-keyframes @name {
+    @vendor: -webkit-;
+    @frames();
+  }
+  @-moz-keyframes @name {
+    @vendor: -moz-;
+    @frames();
+  }
+  @-ms-keyframes @name {
+    @vendor: -ms-;
+    @frames();
+  }
+  @-o-keyframes @name {
+    @vendor: -o-;
+    @frames();
+  }
+  @keyframes @name {
+    @vendor: ~'';
+    @frames();
+  }
+}
+
+@myAni: { 10% {
+  #rotate(14deg);
+} 100% {
+    #rotate(0deg);
+  } };
+#rotate(@deg) {
+  @{vendor}transform: rotate(@deg);
+}
+

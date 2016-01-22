@@ -1,0 +1,13 @@
+{
+    "name" : "zepto",
+    "version" : "1.0.1",
+    "root" : "gallery",
+    "output" : {
+        "zepto.js" : "."
+    },
+    "spmConfig" : {
+        "build" : {
+            "to" : "./{{version}}/"
+        }
+    }
+}

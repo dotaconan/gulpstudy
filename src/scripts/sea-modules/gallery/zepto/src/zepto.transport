@@ -1,0 +1,11 @@
+define(function (require) {
+    var _zepto = window.Zepto;
+    var _$ = window.$;
+
+    // @include {{baseDirectory}}/src/1.0.1/zepto.js
+
+    window.Zepto = _zepto;
+    window.$ = _$;
+
+    return Zepto;
+});
