@@ -271,4 +271,4 @@ gulp.task('dev', ['clean-all', 'lessSourceMap', 'concat-css', 'concat', 'html-in
 gulp.task('release', ['clean-release', 'lessSourceMap', 'concat-css', 'cssmin', 'jsmin', 'images', 'html-release', 'connect-release']);
 //发布重新更名后的版本
 //cssRev编译less,改名压缩css
-gulp.task('releaseRev', ['clean-all', 'cssRev', 'cssmin', 'jsmin', 'images', 'html-release']); //可以监听的任务
+gulp.task('releaseRev', ['clean-all', 'cssRev', 'cssmin', 'images', 'html-release']); //可以监听的任务

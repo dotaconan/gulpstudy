@@ -8,5 +8,4 @@ seajs.use(['$', 'ui.slide.sea'], function ($, UISlide) {
     console.log($);
     console.log(UISlide);
 
-
 });
