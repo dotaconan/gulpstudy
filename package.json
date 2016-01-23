@@ -1,7 +1,7 @@
 {
-  "name": "gulp study demo",
+  "name": "gulpstudydemo",
   "version": "1.0.0",
-  "description": "gulp study demo",
+  "description": "gulpstudydemo",
   "main": "gulpfile.js",
   "dependencies": {
     "gulp": "^3.9.0"
