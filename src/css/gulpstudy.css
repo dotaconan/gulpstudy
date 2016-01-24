@@ -710,6 +710,9 @@ table tr:nth-child(2n) {
 img {
   max-width: 100%;
 }
+p.md-paragraph {
+  text-indent: 2em;
+}
 .ml100 {
   margin-left: 100px;
 }

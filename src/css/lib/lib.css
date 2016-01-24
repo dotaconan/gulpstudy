@@ -2027,6 +2027,9 @@ table tr:nth-child(2n) {
 img {
   max-width: 100%;
 }
+p.md-paragraph {
+  text-indent: 2em;
+}
 /*# sourceMappingURL=markdown.css.map */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 /**
