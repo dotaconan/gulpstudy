@@ -27,7 +27,7 @@
         <h2>前端为什么要构建?</h2>
 
         <p class="md-paragraph">
-            以前，前端开发环境和发布环境是一起的只有源代码。而实际中，我们编写的是源代码，需要通过工具编译、合并、压缩构建之后的代码，开发版与发布版的代码有效区分，这样不仅起到代码优化也起到了代码对外保护。这种以工程化构建的解决方案来定义前端，让前端的开发环境更有秩序。
+            以前，前端开发环境和发布环境是一起的只有源代码。而实际中，我们编写的是源代码，通过工具编译、合并、压缩构建之后的代码，开发版与发布版的代码有效区分，这样不仅起到代码优化也起到了代码对外保护。这种以工程化构建的解决方案来定义前端，让前端的开发环境更有秩序。
         </p>
 
         <h2>前端自动化环节</h2>
@@ -40,7 +40,7 @@
             <li>
                 <h3>项目开发：实时预览</h3>
 
-                <p>实时文件监听。如：对于less等需要编译的环境，可以通过监听，改动文件后实时编译，及时看到编译后效果</p>
+                <p>实时文件监听。如：对于less等需要编译的环境，可以通过监听，改动文件后自动实时编译，浏览器自动刷新，及时看到编译后效果</p>
             </li>
             <li>
                 <h3>项目构建：预编译、合并与压缩</h3>
@@ -130,20 +130,77 @@
             我们将要使用Gulp插件来完成我们以下任务：
         </p>
         <ul>
+            <li>文件/文件夹清理（gulp-clean）</li>
             <li>less的编译（gulp-less/gulp-less-sourcemap）</li>
             <li> css压缩（gulp-minify-css）</li>
-            <li>合并js文件（gulp-concat）</li>
+            <li>合并文件js/css（gulp-concat）</li>
             <li>压缩js代码（gulp-uglify）</li>
             <li>图片压缩（gulp-imagemin）</li>
-            <li>css压缩（gulp-minify-css）</li>
+            <li>js语法提示（gulp-jshint）</li>
+            <li>html合并（gulp-content-includer）</li>
+            <li>文件重命名（gulp-rename）</li>
+            <li>web服务器（gulp-connect）</li>
+            <li>md5重命名（gulp-rev/gulp-rev-collector）</li>
+            <li>消息提示（gulp-notify）</li>
         </ul>
         <p>安装这些插件需要运行如下命令：</p>
         <pre><code>
-            npm install gulp-sass gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache--save-dev
+            npm install gulp-clean gulp-less gulp-less-sourcemap gulp-minify-css gulp-concat gulp-uglify jshint gulp-jshint gulp-notify gulp-rename gulp-imagemin gulp-rev gulp-rev-collector gulp-content-includer gulp-connect --save-dev
         </code></pre>
 
-
-
+        <h4>文件结构</h4>
+        <ul>
+            <li>
+                assets
+            </li>
+            <li>
+                src
+                <ul>
+                    <li>
+                        app
+                        <ul>
+                            <li>
+                                gulpstudy.html
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        css
+                        <ul>
+                            <li>lib</li>
+                            <li>
+                                ui
+                                <ul>
+                                    <li>
+                                        ui.css
+                                    </li>
+                                    <li>
+                                        ui.css.map
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        less
+                        <ul>
+                            <li>
+                                ui
+                                <ul>
+                                    <li>ui.less</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                gulpfile.js
+            </li>
+            <li>
+                package.json
+            </li>
+        </ul>
 
         <h2>Gulp学习</h2>
 
