@@ -204,7 +204,7 @@ gulp.task('clean-html', function () {
     }).pipe(clean({force: true}));
 });
 //html的include到一个文件
-gulp.task('html-include', function () {
+gulp.task('html-include', ['clean-all'], function () {
     gulp.src([paths.src + '/html/**/*.html', "!" + paths.src + '/html/include'])
         .pipe(contentIncluder({
             includerReg: /<!\-\-include\s+"([^"]+)"\-\->/g
