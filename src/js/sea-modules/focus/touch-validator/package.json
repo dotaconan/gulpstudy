@@ -1,0 +1,13 @@
+{
+    "name" : "touch-validator",
+    "version" : "0.1.0",
+    "root" : "focus",
+    "output" : {
+        "./touch-validator.js" : "."
+    },
+    "spmConfig" : {
+        "build" : {
+            "to" : "./{{version}}/"
+        }
+    }
+}

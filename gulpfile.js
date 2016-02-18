@@ -31,7 +31,7 @@ var concat = require('gulp-concat');
 //压缩js
 var uglify = require('gulp-uglify');
 //seajs打包
-//var seajscombo = require('gulp-seajs-combo');
+var seajscombo = require('gulp-seajs-combo');
 
 //图片压缩
 var imagemin = require('gulp-imagemin');
@@ -39,6 +39,8 @@ var imagemin = require('gulp-imagemin');
 //html合并
 var contentIncluder = require('gulp-content-includer');
 
+//htmlprocessor
+var htmlprocessor = require('gulp-htmlprocessor');
 //配置文件,路径
 var paths = {
     src: "src",
@@ -48,7 +50,7 @@ var paths = {
 //1.CSS功能：less编译css(可生成SourceMap)、css合并、压缩、css文件替换名称、对应html替换css路径名称
 //清空所有编译后的资源
 gulp.task("clean-all", function () {
-    return gulp.src([paths.dest, paths.src + "/build", paths.src + "/css", paths.src + "/app/", paths.src + "/scripts/concat"], {
+    return gulp.src([paths.dest, paths.src + "/build", paths.src + "/css", paths.src + "/app/", paths.src + "/js/concat"], {
         read: false
     }).pipe(clean({force: true}))
         .pipe(notify({message: 'clean all complete'}));
@@ -62,7 +64,7 @@ gulp.task("clean-release", function () {
 });
 //清理css文件夹
 gulp.task('clean-css', function () {
-    return gulp.src(paths.src + '/css/', {
+    return gulp.src(paths.src + '/css/**/*.*', {
         read: false
     }).pipe(clean({force: true}));
 });
@@ -92,42 +94,12 @@ gulp.task('less', ['clean-css'], function () {
         }))
         .pipe(gulp.dest(paths.src + '/css/'))
 });
-//方案2：编译less到build目录后，改名至css
-//清理临时build下css文件目录
-gulp.task('clean-build', function () {
-    return gulp.src(paths.src + '/build/', {
-        read: false
-    }).pipe(clean({force: true}));
-});
-//拷贝css到编译环境
-gulp.task('copyCssToBuild', ['lessSourceMap', 'concat-css'], function () {
-    return gulp.src(paths.src + '/css/**/*.*')
-        .pipe(minifyCss())
-        .pipe(gulp.dest(paths.src + '/build/css/'));
-});
-//将css重命名，先执行less编译
-gulp.task('cssRevPre', ['copyCssToBuild'], function () {
-    return gulp.src(paths.src + '/build/css/**/*')
-        .pipe(rev())
-        .pipe(gulp.dest(paths.src + '/css/'))
-        .pipe(rev.manifest('rev-css-manifest.json'))
-        .pipe(gulp.dest(paths.src + '/build/'));
-});
-//★读取css重命名后的json文件
-gulp.task('cssRev', ['cssRevPre'], function () {
-    gulp.src([paths.src + '/build/rev-css-manifest.json', '../**/*.jsp', '../**/*.html'])
-        .pipe(revCollector({
-            replaceReved: true
-        }))
-        .pipe(gulp.dest('../'));
-});
-
 //编译less并压缩，不输出sourceMap
-gulp.task('cssmin', ['lessSourceMap', 'concat-css'], function () {
-    return gulp.src(paths.src + '/css/**/*')
-        //.pipe(gulp.dest(paths.dest + '/css/'))
-        //.pipe(rename({suffix: '.min'}))
-        .pipe(minifyCss())
+gulp.task('cssmin', ['less'], function () {
+    return gulp.src([paths.src + '/css/**/*.css', '!' + paths.src + '/css/_include/*.css'])
+        .pipe(gulp.dest(paths.dest + '/css/'))
+        .pipe(rename({suffix: '.min'}))
+        .pipe(minifyCss({compatibility: 'ie7'}))
         .pipe(gulp.dest(paths.dest + '/css/'))
     //提醒任务完成
     //.pipe(notify({message: 'cssmin task complete'}));
@@ -136,66 +108,102 @@ gulp.task('cssmin', ['lessSourceMap', 'concat-css'], function () {
 //JS部分
 //清理输出目录的图片文件夹
 gulp.task('clean-js', function () {
-    return gulp.src(paths.dest + '/scripts/lib/plugin/', {
+    return gulp.src([paths.dest + '/js/*.min.js', paths.dest + '/js/xyz-mobile/dist/*.js', paths.dest + '/js/xyz-pc/dist/*.js', paths.dest + '/js/lib.js'], {
         read: false
     }).pipe(clean({force: true}));
 });
 //合并js
 gulp.task('concat', ['clean-js'], function () {
-    return gulp.src([paths.src + '/scripts/lib/plugin/*.js'])
+    return gulp.src([paths.src + '/js/lib/*.js', paths.src + '/js/dist/'])
         .pipe(jshint('.jshintrc'))
         .pipe(jshint.reporter('default'))
-        .pipe(concat('jquery.plugins.js'))
-        .pipe(gulp.dest(paths.src + "/scripts/concat/lib/plugin/"))
-    //.pipe(rename({suffix: '.min'}))
-    //.pipe(uglify())
-    //.pipe(gulp.dest(paths.dest + "/scripts/concat/lib/plugin/"))
-    //提醒任务完成
-    //.pipe(notify({message: 'concat task complete'}));
+        .pipe(concat('lib.js'))
+        .pipe(gulp.dest(paths.src + "/js/"))
 });
 //合并css
-gulp.task('concat-css', ['lessSourceMap'], function () {
+gulp.task('concat-css', ['less'], function () {
     return gulp.src([paths.src + '/css/lib/**/*.css'])
         .pipe(concat('lib.css'))
-        .pipe(gulp.dest(paths.src + "/css/lib/"))
+        .pipe(gulp.dest(paths.src + "/css/"))
 });
+//seajscombo
+gulp.task('seajscombo', ['concat'], function () {
+    var seajsPluginPaths = "./../../../sea-modules/";
+    var seajsPaths = "./../../sea-modules/";
+    return gulp.src([paths.src + '/js/xyz-mobile/modules/*.js'])
+        .pipe(seajscombo({
+            map: {
+                "$": seajsPluginPaths + "gallery/zepto/1.0.1/zepto.js",
+                "jquery": seajsPaths + "gallery/jquery/jquery-sea",
+                "zepto": seajsPaths + "gallery/zepto/1.0.1/zepto.js",
+                "cookie": seajsPaths + "gallery/cookie/1.0.2/cookie"
+            }
+        }))
+        .pipe(gulp.dest(paths.src + "/js/xyz-mobile/dist"))
+
+});
+//seajscombo
+gulp.task('seajscombo-pc', ['concat'], function () {
+    //内部插件引用地址
+    var seajsPluginPaths = "./../../../sea-modules/";
+    //外部模块引用的通用地址
+    var seajsPaths = "./../../sea-modules/";
+    var seajsModulesPaths = "./../../";
+    return gulp.src([paths.src + '/js/xyz-pc/main/*.js'])
+        .pipe(seajscombo({
+            map: {
+                "../../js/xyz-pc/modules/gulpstudy": seajsModulesPaths + "xyz-pc/modules/gulpstudy",
+                "$": seajsPluginPaths + "gallery/jquery/jquery-sea",
+                "jquery": seajsPaths + "gallery/jquery/jquery-sea",
+                "zepto": seajsPaths + "gallery/zepto/1.0.1/zepto.js",
+                "cookie": seajsPaths + "gallery/cookie/1.0.2/cookie"
+            }
+        }))
+        .pipe(gulp.dest(paths.src + "/js/xyz-pc/dist"))
+
+});
+//gulp.task('seajscombo', ['concat'], function () {
+//    var seajsPaths = "./../../";
+//    return gulp.src([paths.src + '/js/sea-modules/main/*.js'])
+//        .pipe(seajscombo({
+//            map: {
+//                "$": seajsPaths + "gallery/zepto/1.0.1/zepto"
+//            }
+//        }))
+//        .pipe(gulp.dest(paths.src + "/js/sea-modules/dist"))
+//
+//});
 //压缩js
-gulp.task('jsmin', ['concat'], function () {
-    return gulp.src([paths.src + '/scripts/**/*.js'])
+gulp.task('jsmin', ['seajscombo-pc'], function () {
+    return gulp.src([paths.src + '/js/**/*.js'])
         //.pipe(jshint('.jshintrc'))
         //.pipe(jshint.reporter('default'))
-        .pipe(gulp.dest(paths.dest + "/scripts/"))
+        //TODO 两种方案，一种是minjs
+        //TODO Delete 是否需要保留原先的文件
+        //.pipe(uglify({
+        //    mangle: {except: ['require']}
+        //}))
+        .pipe(gulp.dest(paths.dest + "/js/"))
         .pipe(rename({suffix: '.min'}))
         .pipe(uglify({
-            mangle: {except: ['require']}
+            mangle: {except: ['require', '$', 'define']}
         }))
-        .pipe(gulp.dest(paths.dest + "/scripts/"))
+        .pipe(gulp.dest(paths.dest + "/js/"))
     //提醒任务完成
     //.pipe(notify({message: 'Script task complete'}));
 });
-//gulp.task('seajs', ['jsmin'], function () {
-//    return gulp.src([
-//        paths.src + '/scripts/sea-modules/main/lucky.sea.js',
-//        paths.src + '/scripts/sea-modules/main/spa.sea.js',
-//        paths.src + '/scripts/sea-modules/main/seajs-demo.js'
-//    ])
-//        .pipe(seajscombo({
-//
-//        }))
-//        .pipe(gulp.dest(paths.dest + "/scripts/sea-modules/main"))
-//});
 //清理输出目录的图片文件夹
-gulp.task('clean-images', function () {
-    return gulp.src(paths.dest + '/images/', {
+gulp.task('clean-img', function () {
+    return gulp.src(paths.dest + '/img/', {
         read: false
     }).pipe(clean({force: true}));
 });
 //图片压缩
-gulp.task('images', ['clean-images'], function () {
-    return gulp.src(paths.src + '/images/*')
+gulp.task('img', ['clean-img'], function () {
+    return gulp.src(paths.src + '/img/**/*.*')
         .pipe(imagemin({optimizationLevel: 3, progressive: true, interlaced: true}))
-        .pipe(gulp.dest(paths.dest + '/images'))
-    //.pipe(notify({message: 'Images task complete'}));
+        .pipe(gulp.dest(paths.dest + '/img'))
+    //.pipe(notify({message: 'img task complete'}));
 });
 //清理临时build下css文件目录
 gulp.task('clean-html', function () {
@@ -204,8 +212,8 @@ gulp.task('clean-html', function () {
     }).pipe(clean({force: true}));
 });
 //html的include到一个文件
-gulp.task('html-include', function () {
-    gulp.src([paths.src + '/html/**/*.html', "!" + paths.src + '/html/include'])
+gulp.task('html-include', ['clean-html'], function () {
+    gulp.src([paths.src + '/html/**/*.html', "!" + paths.src + '/html/_include/**/*.html'])
         .pipe(contentIncluder({
             includerReg: /<!\-\-include\s+"([^"]+)"\-\->/g
         }))
@@ -214,11 +222,42 @@ gulp.task('html-include', function () {
 });
 //html发布
 gulp.task('html-release', ['clean-release'], function () {
-    gulp.src([paths.src + '/html/**/*.html', "!" + paths.src + '/html/include'])
+    gulp.src([paths.src + '/html/**/*.html', "!" + paths.src + '/html/_include/**/*.html'])
         .pipe(contentIncluder({
             includerReg: /<!\-\-include\s+"([^"]+)"\-\->/g
         }))
         .pipe(gulp.dest(paths.src + '/app/'))
+    //.pipe(gulp.dest(paths.dest + '/app/'))
+    //.pipe(gulp.dest(paths.dest + '/app/'));
+});
+
+gulp.task('html-processor', ['html-include'], function () {
+    gulp.src(paths.src + '/app/**/*.html')
+        .pipe(htmlprocessor({
+            environment: 'dev',
+            data: {
+                message: ".min"
+            }
+        }))
+        .pipe(gulp.dest(paths.dest + '/app/'));
+});
+gulp.task('html-processor-release', ['html-release'], function () {
+    gulp.src(paths.src + '/app/**/*.html')
+        .pipe(htmlprocessor({
+            environment: 'dev',
+            data: {
+                message: ".min"
+            }
+        }))
+        .pipe(gulp.dest(paths.dest + '/app/'));
+});
+//处理seajs的引用问题，引用min文件
+gulp.task('html-processor-seajs', ['html-processor-release'], function () {
+    gulp.src(paths.src + '/app/**/*.html')
+        .pipe(htmlprocessor({
+            environment: 'dist'
+            //customBlockTypes: ['custom-blocktype.js']
+        }))
         .pipe(gulp.dest(paths.dest + '/app/'));
 });
 //创建服务器
@@ -236,7 +275,7 @@ gulp.task('connect-release', function () {
     connect.server({
         host: '127.0.0.1',           //Server host
         root: paths.dest,
-        port: 8889,
+        port: 8888,
         livereload: true
 
     });
@@ -246,29 +285,45 @@ gulp.task('html-reload', function () {
     gulp.src(paths.src + '/**/*.html')
         .pipe(connect.reload());
 });
+//重新reload
+gulp.task('html-less-reload', ['clean-css', 'less'], function () {
+    gulp.src(paths.src + '/**/*.html')
+        .pipe(connect.reload());
+});
 //启动web服务器
-gulp.task('watch-server', function () {
-    gulp.watch([paths.src + '/html/**/*.html', paths.src + '/app/**/*.html', paths.src + '/css/**/*.css'], ['html-reload']);
+gulp.task('watch-server', ['less'], function () {
+    gulp.watch([paths.src + '/**/*.html'], ['html-reload']);
 });
 
-gulp.task('watcher-less', ['lessSourceMap'], function () {
-    gulp.watch(paths.src + '/less/**/*.less', ['lessSourceMap', 'concat-css']); //当less文件发生改变时，自动编译成css
+gulp.task('watcher-less', ['clean-css', 'less'], function () {
+    gulp.watch(paths.src + '/less/**/*.less', ['less', 'html-less-reload']); //当less文件发生改变时，自动编译成css
 });
-gulp.task('watcher-html', ['html-include'], function () {
-    gulp.watch(paths.src + '/html/**/*.*', ['html-include', 'html-reload']); //当less文件发生改变时，自动编译成css
+gulp.task('watcher-html', ['html-reload'], function () {
+    gulp.watch(paths.src + '/**/*.html', ['html-include', 'html-reload']); //当less文件发生改变时，自动编译成css
+});
+gulp.task('watcher-html-processor', function () {
+    gulp.watch(paths.src + '/**/*.html', ['html-processor', 'html-reload']); //当less文件发生改变时，自动编译成css
 });
 gulp.task('watcher-js', ['concat'], function () {
-    gulp.watch(paths.src + '/scripts/**/*.*', ['concat', 'html-reload']); //当less文件发生改变时，自动编译成css
+    gulp.watch(paths.src + '/js/**/*.js', ['concat', 'html-reload']); //当less文件发生改变时，自动编译成css
+});
+
+//拷贝fonts文件夹
+gulp.task('copy-fonts', ['clean-release'], function () {
+    return gulp.src(paths.src + '/fonts/**/*.*')
+        .pipe(gulp.dest(paths.dest + '/fonts'))
+    //.pipe(notify({message: 'img task complete'}));
+});
+//拷贝额外的css文件
+gulp.task('copy-css-other', ['less'], function () {
+    return gulp.src(paths.src + '/othercss/**/*.*')
+        .pipe(gulp.dest(paths.src + '/css/othercss'))
+    //.pipe(notify({message: 'img task complete'}));
 });
 //gulp任务
-//初始化所需文件
-gulp.task('install', ['clean-all', 'copyProject']); //定义默认任务
 //默认
-gulp.task('default', ['clean-all', 'lessSourceMap', 'concat', 'images', 'html-include']); //定义默认任务
+gulp.task('default', ['clean-all', 'lessSourceMap', 'concat', 'img', 'html-include']); //定义默认任务
 //开发模式
-gulp.task('dev', ['clean-all', 'lessSourceMap', 'concat-css', 'concat', 'html-include', 'watcher-less', 'watcher-js', 'watcher-html', 'connect', 'watch-server']); //可以监听的任务
+gulp.task('dev', ['clean-all', 'less', 'copy-css-other', 'concat', 'watcher-less', 'watcher-js', 'html-include', 'html-processor', 'connect', 'watcher-html']); //可以监听的任务
 //发布常规编译后的版本
-gulp.task('release', ['clean-release', 'lessSourceMap', 'concat-css', 'cssmin', 'jsmin', 'images', 'html-release', 'connect-release']);
-//发布重新更名后的版本
-//cssRev编译less,改名压缩css
-gulp.task('releaseRev', ['clean-all', 'cssRev', 'cssmin', 'images', 'html-release']); //可以监听的任务
+gulp.task('release', ['clean-release', 'copy-fonts', 'less', 'concat', 'concat-css', 'cssmin', 'seajscombo', 'seajscombo-pc', 'jsmin', 'img', 'html-release', 'html-processor-release', 'html-processor-seajs', 'connect-release']);

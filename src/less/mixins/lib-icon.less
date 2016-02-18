@@ -1,0 +1,48 @@
+@import "lib-para.less";
+@import "lib-function.less";
+
+.lucky-icon-cloudy {
+  -webkit-animation: cloudy 5s ease-in-out infinite;
+  animation: cloudy 5s ease-in-out infinite;
+  background: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: #FFFFFF 65rem/@app-font-size -15rem/@app-font-size 0 -5rem/@app-font-size,
+  #FFFFFF 25rem/@app-font-size -25rem/@app-font-size,
+  #FFFFFF 30rem/@app-font-size 10rem/@app-font-size,
+  #FFFFFF 60rem/@app-font-size 15rem/@app-font-size 0 -5rem/@app-font-size,
+  #FFFFFF 85rem/@app-font-size 5rem/@app-font-size 0 -15rem;
+  height: 50rem/@app-font-size;
+  width: 50rem/@app-font-size;
+}
+
+.lucky-icon-sunny {
+  position: absolute;
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+  height: 140rem/@app-font-size;
+  width: 20rem/@app-font-size;
+
+  &:before {
+    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(top, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+    content: '';
+    height: 140rem/@app-font-size;
+    width: 20rem/@app-font-size;
+    opacity: 1;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    .lessTransform(rotate(90deg));
+  }
+  &:after {
+    background: #FFEE44;
+    border-radius: 50%;
+    box-shadow: rgba(255, 255, 0, 0.2) 0 0 0 15px;
+    content: '';
+    height: 80px;
+    width: 80px;
+    position: absolute;
+    left: -30px;
+    top: 30px;
+  }
+}

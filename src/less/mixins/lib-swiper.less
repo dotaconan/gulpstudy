@@ -1,0 +1,57 @@
+@import "lib-para";
+@import "lib-function";
+@import "lib-animation";
+
+//向上滑动显示
+#createKeyFrames(aniSlideUpShow, @aniSlideUpShow);
+
+.swiper-bottom-arrow {
+
+  opacity: 1;
+  position: absolute;
+  left: 50%;
+  bottom: 30rem/@base-font-size;
+  margin-left: 30rem/@base-font-size/(-2);
+  width: 30rem/@base-font-size;
+  height: 30rem/@base-font-size;
+  //background-image: url("@{img-url}/arrow.png");
+  //background-size: 30rem/@base-font-size 20rem/@base-font-size;
+  z-index: 999;
+
+  &:after {
+    position: absolute;
+    content: "";
+    width: 30rem/@base-font-size;
+    height: 30rem/@base-font-size;
+    border-left: 5rem/@base-font-size solid #fff;
+    border-bottom: 5rem/@base-font-size solid #fff;
+    .lessTransform(rotate(135deg));
+  }
+}
+
+.swiper-slide {
+  color: #fff;
+}
+
+.swiper-slide.swiper-slide-active {
+  .swiper-bottom-arrow {
+    opacity: 1;
+    position: absolute;
+    left: 50%;
+    bottom: 30rem/@base-font-size;
+    margin-left: 30rem/@base-font-size/(-2);
+    width: 30rem/@base-font-size;
+    height: 30rem/@base-font-size;
+    z-index: 999;
+    .lessAnimation(aniSlideUpShow, 1.6s, ease, 0s, infinite, normal, forwards);
+    &:after {
+      position: absolute;
+      content: "";
+      width: 30rem/@base-font-size;
+      height: 30rem/@base-font-size;
+      border-left: 5rem/@base-font-size solid #fff;
+      border-bottom: 5rem/@base-font-size solid #fff;
+      .lessTransform(rotate(135deg));
+    }
+  }
+}

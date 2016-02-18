@@ -1,0 +1,10 @@
+{
+    "family" : "focus",
+    "name" : "touch-modal",
+    "version" : "0.1.2",
+    "spm" : {
+        "output" : [
+            "touch-modal.js"
+        ]
+    }
+}

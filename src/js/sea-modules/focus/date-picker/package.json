@@ -1,0 +1,10 @@
+{
+    "family" : "focus",
+    "name" : "date-picker",
+    "version" : "0.0.2",
+    "spm" : {
+        "output" : [
+            "date-picker.js"
+        ]
+    }
+}

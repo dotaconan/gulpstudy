@@ -1,2 +1,2 @@
-ï»¿echo gulp clean-all  æ¸…ç©ºå¼€å‘ç¯å¢ƒ
+echo gulp clean-all  Çå¿Õ¿ª·¢»·¾³
 gulp clean-all

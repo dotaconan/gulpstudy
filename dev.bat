@@ -1,4 +1,4 @@
-ï»¿echo gulp clean-all  æ¸…ç©ºå¼€å‘ç¯å¢ƒ
+echo gulp clean-all  Çå¿Õ¿ª·¢»·¾³
 echo gulp clean-all
-echo gulp devå¼€å‘æ¨¡å¼ï¼Œæ‰§è¡Œ'clean-all', 'lessSourceMap', 'concat', 'html-include', 'watcher-less', 'watcher-js', 'watcher-html', 'connect', 'watch-server'
+echo gulp.task('dev', ['clean-all', 'less', 'copy-css-other', 'concat', 'watcher-less', 'watcher-js', 'html-include', 'html-processor', 'connect', 'watcher-html']); //¿ÉÒÔ¼àÌıµÄÈÎÎñ
 gulp dev

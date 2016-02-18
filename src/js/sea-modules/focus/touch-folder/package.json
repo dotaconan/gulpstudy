@@ -1,0 +1,13 @@
+{
+    "name" : "touch-folder",
+    "version" : "0.1.0",
+    "root" : "focus",
+    "output" : {
+        "touch-folder.js" : "."
+    },
+    "spmConfig" : {
+        "build" : {
+            "to" : "./{{version}}/"
+        }
+    }
+}

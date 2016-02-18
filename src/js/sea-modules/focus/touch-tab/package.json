@@ -1,0 +1,13 @@
+{
+    "name" : "touch-tab",
+    "version" : "0.1.0",
+    "root" : "focus",
+    "output" : {
+        "touch-tab.js" : "."
+    },
+    "spmConfig" : {
+        "build" : {
+            "to" : "./{{version}}/"
+        }
+    }
+}

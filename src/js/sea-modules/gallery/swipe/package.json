@@ -1,0 +1,13 @@
+{
+    "name" : "swipe",
+    "version" : "1.0.0",
+    "root" : "gallery",
+    "output" : {
+        "swipe.js" : "."
+    },
+    "spmConfig" : {
+        "build" : {
+            "to" : "./{{version}}/"
+        }
+    }
+}

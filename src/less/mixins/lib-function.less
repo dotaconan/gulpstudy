@@ -15,9 +15,17 @@
   transition: @lessTransition;
 }
 
-//animation:[<animation-name> || <animation-duration> || <animation-timing-function> || <animation-delay> || <animation-iteration-count> || <animation-direction>] ]
+.lessAnimationMulti( @opt1,@opt2) {
+  -webkit-animation: @opt1,@opt2;
+  -moz-animation: @opt1,@opt2;
+  -ms-animation: @opt1,@opt2;
+  -o-animation: @opt1,@opt2;
+  transition: @opt1,@opt2;
+}
 
-.lessAnimation(@animation-name,@animation-duration,@animation-timing-function,@animation-delay,@animation-iteration-count,@animation-direction) {
+//animation:[<animation-name> || <animation-duration> || <animation-timing-function> || <animation-delay> || <animation-iteration-count> || <animation-direction>] || animation-fill-mode]
+//如：.lessAnimation(ani, 3s, ease, 0.8s, infinite, normal, both);
+.lessAnimation(@animation-name,@animation-duration,@animation-timing-function,@animation-delay,@animation-iteration-count,@animation-direction,@animation-fill-mode) {
   animation: @arguments;
   -moz-animation: @arguments;
   -ms-animation: @arguments;

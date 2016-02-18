@@ -1,0 +1,9 @@
+define(function (require, exports) {
+    var _Swipe = window.Swipe;
+
+    // @include {{baseDirectory}}/src/swipe-original.js
+
+    var tmp = window.Swipe;
+    window.Swipe = _Swipe;
+    return tmp;
+});

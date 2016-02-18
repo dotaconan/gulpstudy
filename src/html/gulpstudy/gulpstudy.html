@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <!--include "../_include/meta.html"-->
+    <meta name="keywords" content="gulp学习"/>
+    <meta name="description" content="gulp学习"/>
+    <title>gulp学习</title>
+    <!-- build:css ../../css/gulpstudy/gulpstudy.min.css -->
+    <link rel="stylesheet" href="../../css/gulpstudy/gulpstudy.css">
+    <!-- /build -->
+</head>
+<body>
+<!--include "../_include/header.html"-->
+
+<div class="ui-main ui-clearfix">
+    <div class="ui-container">
+        <h2><i class="fa fa-anchor"></i>前端自动化意义</h2>
+
+        <p class="md-paragraph">
+            随着web项目的扩大，页面引用大量js，css文件增多，请求数增大，页面的加载速度受影响，一方面为了更好提高用户体验，提高网页加载速度，需要对js/css等相关资源进行合并、压缩等优化提高性能。另一方面，版本更新速度加快，前端开发过程经常需要拷贝、替换文件，类似的页面需要引入同样的代码不停的复制粘贴，代码改完后启web服务器浏览器打开，每次修改还得F5刷新浏览器查看效果，前端开发效率出现瓶颈。因此我们需要一种能够解决重复的前端劳动以及开始能够编译less等预编译语言，自动刷新浏览器，合并文件、压缩代码，替换文件内容等功能的工具，于是出现了基于nodejs平台(谷歌v8引擎的javascript运行环境，即控制台版的chrome浏览器多了操作文件等更强大的功能用来作为服务器运行环境，由于执行语言为javascript，对于前端开发人员特别友好得到很好推广使用)，其中gulp、grunt等插件，通过nodejs控制台环境执行执行命令，能够自动化执行编译打包、压缩代码等功能，有效提高前端开发效率，形成可维护更规范化的前端开发环境。
+        </p>
+        <ul>
+            <li>
+                web页面资源需要js/css等文件压缩、合并提高加载速度
+            </li>
+            <li>
+                前端开发周期短暂，重复劳动多
+            </li>
+        </ul>
+        <h2>前端自动化构建优势</h2>
+
+        <p class="md-paragraph">
+            以前，前端开发环境和发布环境是一起的只有源代码，维护起来不容易。而实际中，我们需要把前端资源分为：开发版和发布版。编写的是源代码，通过自动化工具进行编译、合并、压缩构建，开发版与发布版的代码有效区分，这样不仅起到代码优化也起到了代码对外保护。这种以工程化构建的解决方案来定义前端，让前端的开发环境更有秩序。
+        </p>
+        <ul>
+            <li>
+                提高前端开发效率，尽可能减少重复劳动
+            </li>
+            <li>
+                提高项目质量和可维护性
+            </li>
+            <li>
+                区分开发版本、发布版本，有利于前端规范化开发
+            </li>
+        </ul>
+        <h2>前端自动化环节</h2>
+        <ul>
+            <li>
+                <h3>项目创建：自动根据配置构建开发环境</h3>
+
+                <p>构建开发环境。比如专题活动：能够直接根据已有模版生成目标文件夹。把基础的css引入</p>
+            </li>
+            <li>
+                <h3>项目开发：实时预览</h3>
+
+                <p>实时文件监听。如：对于less等需要编译的环境，可以通过监听，改动文件后自动实时编译，浏览器自动刷新，及时看到编译后效果</p>
+            </li>
+            <li>
+                <h3>项目构建：预编译、合并与压缩</h3>
+
+                <p>执行命令行实现编译，代码合并，代码压缩</p>
+            </li>
+            <li>
+                <h3>项目发布：将构建后的静态文件发布上线</h3>
+
+                <p>文件的拷贝、改名，以及上传到服务器</p>
+            </li>
+            <li>
+                <h3>项目打包：资源路径转换，源代码打包</h3>
+
+                <p>对应资源路径更改，文件的zip压缩</p>
+            </li>
+        </ul>
+        <h2>gulp.js-基于流的自动化构建工具</h2>
+        <ul>
+            <li>
+                <h3>易于使用</h3>
+
+                <p>通过代码优于配置的策略，Gulp 让简单的任务简单，复杂的任务可管理。</p>
+            </li>
+            <li>
+                <h3>构建快速</h3>
+
+                <p>
+                    利用 Node.js 流的威力，你可以快速构建项目并减少频繁的 IO 操作。
+                </p>
+            </li>
+            <li>
+                <h3>插件高质</h3>
+
+                <p>
+                    Gulp 严格的插件指南确保插件如你期望的那样简洁高质得工作。
+                </p>
+            </li>
+            <li>
+                <h3>易于学习</h3>
+
+                <p>
+                    通过最少的 API，掌握 Gulp 毫不费力，构建工作尽在掌握：如同一系列流管道。
+                </p>
+            </li>
+        </ul>
+
+        <h2>gulp.js环境搭建</h2>
+
+        <h3>第1步：安装Node</h3>
+
+        <p class="md-paragraph">
+            首先，最基本也最重要的是，我们需要搭建node环境。访问 <a href="http://nodejs.org/" target="_blank">nodejs.org</a>，然后点击install按钮，下载完成后直接运行程序，就一切准备就绪。npm会随着安装包一起安装，稍后会用到它.
+        </p>
+
+        <p>为了确保Node已经正确安装，我们执行几个简单的命令。</p>
+
+        <pre><code class="html">
+            node -v
+            npm -v
+        </code></pre>
+
+        <blockquote>如果这两行命令没有得到返回，可能node就没有安装正确，进行重装。</blockquote>
+
+        <h3>第2步：安装gulp</h3>
+
+        <p>首先需要全局安装一遍：</p>
+
+        <pre><code class="html">
+            npm install gulp -g -d
+        </code></pre>
+
+        <p>运行时注意查看命令行有没有错误信息，安装完成后，你可以使用下面的命令查看gulp的版本号以确保gulp已经被正确安装。</p>
+
+        <pre><code>
+            gulp -v
+        </code></pre>
+
+        <p>接着我们要进去到项目的根目录再安装一遍</p>
+        <pre><code class="html">
+            npm install gulp --save-dev
+        </code></pre>
+
+        <h3>第3步：新建gulpfile.js文件</h3>
+
+        <p>
+            我们将要使用Gulp插件分为以下几类：
+        </p>
+        <ul>
+            <li>
+                <h3>文件操作类</h3>
+                <ul>
+                    <li>
+                        文件/文件夹清理（gulp-clean）
+                    </li>
+                    <li>
+                        文件合并，包括js/css（gulp-concat）
+                    </li>
+                    <li>
+                        文件改名（gulp-rename）
+                    </li>
+                    <li>
+                        文件名改名为md5(大网站发布时用)(gulp-rev/gulp-rev-collector)
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>css处理类</h3>
+                <ul>
+                    <li>
+                        编译less为css（gulp-less/gulp-less-sourcemap）
+                    </li>
+                    <li>
+                        压缩css（gulp-minify-css）
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>js处理类</h3>
+                <ul>
+                    <li>
+                        编译less为css（gulp-less/gulp-less-sourcemap）
+                    </li>
+                    <li>
+                        压缩js（gulp-uglify）
+                    </li>
+                    <li>
+                        js语法提示（gulp-jshint）
+                    </li>
+                    <li>
+                        打包seajs（gulp-seajs-combo）
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>html处理类</h3>
+                <ul>
+                    <li>
+                        html引用文件替换/内容替换（gulp-htmlprocessor）
+                    </li>
+                    <li>
+                        html引入文件(gulp-content-includer)
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>服务器类</h3>
+                <ul>
+                    <li>
+                        创建web服务器，文件更改浏览器实时刷新（gulp-connect）
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>图片处理类</h3>
+                <ul>
+                    <li>
+                        图片压缩（gulp-imagemin）
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>其他</h3>
+                <ul>
+                    <li>
+                        gulp任务结束后提示消息（gulp-notify）
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <p>安装这些插件需要运行如下命令：</p>
+        <pre><code class="html">
+            npm install gulp gulp-clean gulp-less gulp-minify-css gulp-concat gulp-uglify gulp-livereload jshint gulp-jshint gulp-notify gulp-rename gulp-imagemin gulp-rev gulp-rev-collector gulp-connect gulp-content-includer gulp-htmlprocessor gulp-seajs-combo --save-dev
+        </code></pre>
+
+        <h4>gulpfile.js部分代码</h4>
+         <pre><code class="js">
+             var gulp = require('gulp');
+             //1.清理文件、文件夹，用于重新打包时候清理环境
+             var clean = require("gulp-clean");
+             var less = require('gulp-less');
+             ...
+             //设置文件路径
+             var paths = {
+                 src: "src",
+                 dest: "assets"
+             };
+             //清空所有编译后的资源
+             gulp.task("clean-all", function () {
+                 return gulp.src([paths.dest, paths.src + "/build", paths.src + "/css", paths.src + "/app/", paths.src + "/js/concat"], {
+                        read: false
+                    }).pipe(clean({force: true}))
+                    .pipe(notify({message: 'clean all complete'}));
+             });
+             gulp.task('less', ['clean-css'], function () {
+                 return gulp.src([paths.src + '/less/**/*.less', "!" + paths.src + '/less/mixins/**/*'])
+                    .pipe(less({
+                        paths: [path.join(__dirname, 'less', 'includes')]
+                    }))
+                    .pipe(gulp.dest(paths.src + '/css/'))
+             });
+             ..
+
+             //创建开发模式的监听任务
+             gulp.task('dev', ['clean-all', 'less', 'copy-css-other', 'concat', 'watcher-less', 'watcher-js', 'html-include', 'html-processor', 'connect', 'watcher-html']); //可以监听的任务
+         </code></pre>
+        <h4>项目gulpfile所在根目录命令行运行</h4>
+        <pre><code class="html">
+            gulp dev
+        </code></pre>
+        <h4><i class="fa fa-file-text"></i>大致文件结构</h4>
+        <img src="../../img/gulpstudy/gulpdemo-img-1.png" alt=""/>
+        <img src="../../img/gulpstudy/gulpdemo-img-2.png" alt=""/>
+        <img src="../../img/gulpstudy/gulpdemo-img-3.png" alt=""/>
+        <img src="../../img/gulpstudy/gulpdemo-img-4.png" alt=""/>
+
+        <h2>示例</h2>
+
+        <h3>gulp环境配置</h3>
+        <pre><code class="bash">
+            var gulp = require('gulp');
+            //一.开发
+            //1.清理文件、文件夹，用于重新打包时候清理环境
+            var clean = require("gulp-clean");
+        </code></pre>
+
+        <h1>实例</h1>
+
+        <h2>1.less编译</h2>
+        <p>按钮样式,通过less方法快速编写的css3过渡动画</p>
+        <div class="ui-action">
+            <a href="javascript:void(0)" class="ui-btn">按钮</a>
+        </div>
+
+        <h2>2.html利用include引入组件</h2>
+        <h3>轮播图片切换</h3>
+        <p>通过 include "control/xyzui-slide.html" 导入到html中动态生成的seajs组件</p>
+        <!--include "../control/xyzui-slide.html"-->
+
+        <h3>主体页面中插件文件的引入</h3>
+        <pre>
+            <code>
+                &lt;--include "../control/xyzui-slide.html"--&gt;
+            </code>
+        </pre>
+        <h3>编译后解析为</h3>
+        <pre>
+            <code>
+                &lt;div class="xyzui-slide" data-toggle="Slide" data-slide-autoRun='true' data-slide-effect='fade' data-slide-interval='1500'&gt;
+                    &lt;ul&gt;
+                        &lt;li&gt;
+                            &lt;a href="http://www.baidu.com" target="_blank"&gt;
+                                &lt;img src="../../img/01.jpg" width="640" height="300"/&gt;
+                            &lt;/a&gt;
+                        &lt;/li&gt;
+                        ...
+                    &lt;/ul&gt;
+                &lt;/div&gt;
+            </code>
+        </pre>
+        <h2>3.引入了iconfont字体效果</h2>
+
+        <p>
+            <i class="fa fa-2x fa-wechat"></i>
+            <i class="fa fa-2x fa-qq"></i>
+            <i class="fa fa-3x fa-weibo"></i>
+            <i class="fa fa-4x fa-facebook"></i>
+            <i class="fa fa-5x fa-github"></i>
+            <i class="fa fa-4x fa-plus"></i>
+            <i class="fa fa-3x fa-minus"></i>
+            <i class="fa fa-2x fa-share"></i>
+            <i class="fa fa-2x fa-refresh"></i>
+
+            <i class="fa fa-3x fa-android"></i>
+            <a href="http://www.apple.com" target="_blank">
+                <i class="fa fa-3x fa-apple"></i>
+            </a>
+        </p>
+    </div>
+</div>
+
+<!--footer[[-->
+<!--include "../_include/footer.html"-->
+<!--footer]]-->
+
+<!--seajs common[[-->
+<!--include "../_include/seajs-script.html"-->
+<!--seajs common]]-->
+
+<!-- build:js:dist ../../js/xyz-pc/dist/gulpstudy-demo.min.js-->
+<script type="text/javascript" src="../../js/xyz-pc/main/gulpstudy-demo.js"></script>
+<!-- /build -->
+
+</body>
+</html>

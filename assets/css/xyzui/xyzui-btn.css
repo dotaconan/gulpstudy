@@ -1,0 +1,39 @@
+@charset "utf-8";
+/**
+  * ui.btn
+  * lucky journey
+  * 2016.1.16
+  */
+/*
+ * 基础库，纯设置
+ */
+.ui-btn {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  width: 200px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  background-color: #f75730;
+  text-decoration: none;
+  border-radius: 5px;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+.ui-btn:hover {
+  font-size: 16px;
+  color: #fff;
+  background-color: #e94609;
+  text-decoration: none;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}

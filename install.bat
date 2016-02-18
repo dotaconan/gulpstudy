@@ -1,5 +1,4 @@
-锘縠cho nodejs鐜涓嬶紝鍏堝叏灞�瀹夎npm install gulp -g -d
-echo 瀹夎浠ヤ笅gulp鎻掍欢锛屼箣鍚庢湰鍦板畨瑁単ulp锛歯pm install gulp
-echo npm install gulp gulp-clean gulp-less gulp-less-sourcemap less-plugin-clean-css gulp-minify-css gulp-concat gulp-uglify gulp-livereload jshint gulp-jshint gulp-notify gulp-rename gulp-imagemin gulp-content-includer gulp-connect --save-dev
-npm install gulp gulp-clean gulp-less gulp-less-sourcemap less-plugin-clean-css gulp-minify-css gulp-concat gulp-uglify gulp-livereload jshint gulp-jshint gulp-notify gulp-rename gulp-imagemin gulp-rev gulp-rev-collector gulp-content-includer gulp-connect --save-dev
-echo npm install gulp
+echo nodejs环境下，先全局安装npm install gulp -g -d
+echo 安装以下gulp插件，之后本地安装gulp：npm install gulp
+echo npm install gulp gulp-clean gulp-less gulp-less-sourcemap gulp-minify-css gulp-concat gulp-uglify jshint gulp-jshint gulp-notify gulp-rename gulp-imagemin gulp-connect gulp-content-includer gulp-rev gulp-rev-collector  gulp-htmlprocessor gulp-seajs-combo --save-dev
+npm install gulp gulp-clean gulp-less gulp-less-sourcemap gulp-minify-css gulp-concat gulp-uglify jshint gulp-jshint gulp-notify gulp-rename gulp-imagemin gulp-rev gulp-rev-collector gulp-connect gulp-content-includer gulp-htmlprocessor gulp-seajs-combo --save-dev

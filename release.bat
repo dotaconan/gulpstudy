@@ -1,3 +1,2 @@
-﻿echo release 
-echo 'release', ['clean-release', 'lessSourceMap', 'concat-css', 'cssmin', 'jsmin', 'images', 'html-release']); 
+﻿echo gulp release 
 gulp release

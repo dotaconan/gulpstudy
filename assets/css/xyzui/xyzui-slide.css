@@ -1,0 +1,73 @@
+@charset "utf-8";
+/**
+  * ui.btn
+  * lucky journey
+  * 2016.1.16
+  */
+/*
+ * 基础库，纯设置
+ */
+/*焦点图*/
+.xyzui-slide {
+  position: relative;
+  width: 640px;
+  height: 300px;
+  overflow: hidden;
+}
+.xyzui-slide ul {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+.xyzui-slide ul li {
+  display: none;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0px;
+  top: 0px;
+}
+.xyzui-slide .number {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+}
+.xyzui-slide .number span {
+  display: block;
+  float: left;
+  width: 10px;
+  height: 10px;
+  font-size: 0;
+  background: #fff;
+  margin-left: 2px;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+  cursor: pointer;
+}
+.xyzui-slide .number span.current {
+  background: #44b5df;
+}
+.xyzui-slide .arrow {
+  position: absolute;
+  width: 39px;
+  height: 96px;
+  top: 50%;
+  margin-top: -48px;
+  background: url("../../img/xyzui-slide/arrow.png") no-repeat;
+  cursor: pointer;
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+  z-index: 2;
+}
+.xyzui-slide .arrow:hover {
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
+.xyzui-slide .arrow.prev {
+  left: 0;
+}
+.xyzui-slide .arrow.next {
+  right: 0;
+  background-position: -39px 0;
+}

@@ -1,0 +1,31 @@
+
+/**
+  * ui.btn
+  * lucky journey
+  * 2016.1.16
+  */
+@import "../mixins/lib-para";
+@import "../mixins/lib-function";
+.ui-btn {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  width: 200px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 14px;
+  color: #fff;
+  background-color: @primary-color-orange;
+  text-decoration: none;
+  border-radius: 5px;
+  .lessTransition();
+
+  &:hover {
+    font-size: 16px;
+    color: #fff;
+    background-color: @primary-color-orange-hover;
+    text-decoration: none;
+    .lessTransition();
+  }
+}

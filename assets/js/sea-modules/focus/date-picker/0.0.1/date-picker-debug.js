@@ -1,0 +1,195 @@
+/**
+ * 滚动选择器，与 iScroll 对象对应
+ * @author geliang
+ */
+define("focus/date-picker/0.0.1/scroll-picker-debug", [ "underscore-debug", "$-debug", "events-debug", "iscroll-debug" ], function(require, exports, module) {
+    var _ = require("underscore-debug");
+    var $ = require("$-debug");
+    var Events = require("events-debug");
+    var iScroll = require("iscroll-debug");
+    var ScrollPicker = function(element, options) {
+        _.bindAll(this);
+        Events.mixTo(this);
+        this.$list = $(element).find(".lists");
+        this.iscroll = new iScroll(this.$list[0], {
+            vScrollbar: false,
+            hScrollbar: false,
+            snap: "li",
+            onScrollEnd: this.handlePick
+        });
+        this.render(options);
+    };
+    ScrollPicker.prototype = {
+        constructor: ScrollPicker,
+        // 处理滚动结束，即选择事件，会触发自身的 picked 事件
+        handlePick: function() {
+            // iScroll 会认为最后一个元素也能被 scroll 到，这里做一下防御
+            if (this.iscroll.currPageY >= this.iscroll.pagesY.length - 2) {
+                this.iscroll.scrollToPage(0, this.iscroll.pagesY.length - 3, 0);
+                return;
+            }
+            if (this.$currEl) {
+                this.$currEl.removeClass("current");
+            }
+            this.$currEl = this.$list.find("li").eq(this.iscroll.currPageY + 1);
+            this.$currEl.addClass("current");
+            this.value = this.$currEl.data("value");
+            this.trigger("picked");
+        },
+        // 渲染，会根据 options.data 来重新渲染选项
+        render: function(options) {
+            if (!options || !options.data) {
+                return;
+            }
+            this.$list.find("li[data-value]").remove();
+            _.each(options.data, function(item) {
+                this.$list.find("li:last").before('<li data-value="' + item[1] + '">' + item[0] + "</li>");
+            }, this);
+        },
+        getIndex: function() {
+            return this.iscroll.currPageY;
+        },
+        gotoIndex: function(index) {
+            this.iscroll.refresh();
+            this.iscroll.scrollToPage(0, index, 0);
+        }
+    };
+    return ScrollPicker;
+});
+
+/**
+ * 节日的数据
+ * @author geliang
+ */
+define("focus/date-picker/0.0.1/festival-debug", [], {
+    1: {
+        1: "元旦"
+    },
+    5: {
+        1: "劳动节"
+    }
+});
+
+define("focus/date-picker/0.0.1/date-picker-debug", [ "./scroll-picker-debug", "./festival-debug", "underscore-debug", "$-debug", "events-debug", "moment-debug", "modal-debug", "iscroll-debug" ], function(require) {
+    var _ = require("underscore-debug");
+    var $ = require("$-debug");
+    var Events = require("events-debug");
+    var moment = require("moment-debug");
+    var Modal = require("modal-debug");
+    var ScrollPicker = require("./scroll-picker-debug");
+    var festival = require("./festival-debug");
+    var html = '<div class="md-input-date" style="display: none;"><div class="ly-clearFix title"><div class="ly-left date-title"></div><div class="ly-right date-descr"></div></div><div class="content"><div class="dates ly-clearFix"><div class="date"><a href="javascript:void(0);" class="tri tri-up"></a><a href="javascript:void(0);" class="tri tri-down"></a><div class="lists"><ul><li></li><li></li></ul><span class="hex hex1"></span><span class="hex hex2"></span></div></div><div class="date"><a href="javascript:void(0);" class="tri tri-up"></a><a href="javascript:void(0);" class="tri tri-down"></a><div class="lists"><ul><li></li><li></li></ul><span class="hex hex1"></span><span class="hex hex2"></span></div></div><div class="date"><a href="javascript:void(0);" class="tri tri-up"></a><a href="javascript:void(0);" class="tri tri-down"></a><div class="lists"><ul><li></li><li></li></ul><span class="hex hex1"></span><span class="hex hex2"></span></div></div></div></div><div class="action"><a href="javascript:void(0)" title="" class="cancel">取消</a><a href="javascript:void(0)" title="" class="submit">确定</a></div></div>';
+    var YEAR_START = 1950;
+    var YEAR_END = 2050;
+    var DatePicker = function() {
+        _.bindAll(this);
+        Events.mixTo(this);
+        this.festival = festival;
+        this.$el = $(html).appendTo("body");
+        this.modal = new Modal(this.$el);
+        this.init();
+    };
+    DatePicker.prototype = {
+        constructor: DatePicker,
+        init: function() {
+            this.yearPicker = new ScrollPicker(this.$el.find(".date")[0], {
+                data: generateDateRange(YEAR_START, YEAR_END)
+            });
+            this.monthPicker = new ScrollPicker(this.$el.find(".date")[1], {
+                data: generateDateRange(1, 12)
+            });
+            this.dayPicker = new ScrollPicker(this.$el.find(".date")[2]);
+            this.yearPicker.on("picked", this.handleYearMonthPick);
+            this.monthPicker.on("picked", this.handleYearMonthPick);
+            this.dayPicker.on("picked", this.handleDayPick);
+            this.$el.find(".cancel").tap(this.hide);
+            this.$el.find(".submit").tap(this.submit);
+        },
+        // 显示，参数可以传递 date，表示需要显示的日期，默认为今天
+        // date 参数类型可以为字符串 '2010-01-01' 或者 moment 对象
+        show: function(options) {
+            this.modal.show();
+            options = options || {};
+            var date = options.date || moment();
+            if (_.isString(date)) {
+                date = moment(date);
+            }
+            this.yearPicker.gotoIndex(date.year() - YEAR_START);
+            this.monthPicker.gotoIndex(date.month() - 0);
+            this.dayPicker.gotoIndex(date.date() - 1);
+        },
+        hide: function() {
+            this.modal.hide();
+        },
+        submit: function() {
+            this.hide();
+            this.trigger("submit", this.date);
+        },
+        // 选择了年月以后，要改变日期的可选范围（28 29 30 31）
+        handleYearMonthPick: function() {
+            if (!this.yearPicker.value || !this.monthPicker.value) {
+                return;
+            }
+            var days = moment([ this.yearPicker.value, this.monthPicker.value - 1 ]).daysInMonth();
+            var oldIndex = this.dayPicker.getIndex();
+            this.dayPicker.render({
+                data: generateDateRange(1, days)
+            });
+            this.dayPicker.gotoIndex(oldIndex || 0);
+        },
+        // 选择日期，当选择了年月之后，也会触发日期的选择
+        handleDayPick: function() {
+            this.date = moment([ this.yearPicker.value, this.monthPicker.value - 1, this.dayPicker.value ]);
+            this.$el.find(".date-title").text(this.date.format("YYYY-MM-DD ddd"));
+            this.renderFestival();
+        },
+        // 渲染日期
+        renderFestival: function() {
+            if (moment().startOf("day").isSame(this.date)) {
+                // 今天
+                this.$el.find(".date-descr").text("今天");
+            } else {
+                // 节日
+                var monthFest = this.festival[this.monthPicker.value];
+                if (monthFest && monthFest[this.dayPicker.value]) {
+                    this.$el.find(".date-descr").text(monthFest[this.dayPicker.value]);
+                } else {
+                    this.$el.find(".date-descr").text("");
+                }
+            }
+        }
+    };
+    // 类方法，用于为 input text 提供日历的效果
+    DatePicker.create = function(elements) {
+        if (!DatePicker.instance) {
+            // 只有一个实例，服务所有输入框
+            DatePicker.instance = new DatePicker();
+            DatePicker.instance.on("submit", function(date) {
+                DatePicker.relatedInput.value = date.format("YYYY-MM-DD");
+                $(DatePicker.relatedInput).attr("formnovalidate", false).trigger("focusout");
+            });
+        }
+        $(elements).focus(function() {
+            $(this).attr("formnovalidate", true);
+            // 取消校验
+            this.blur();
+            DatePicker.instance.show({
+                date: this.value
+            });
+            DatePicker.relatedInput = this;
+            return false;
+        });
+    };
+    moment.lang("zh", {
+        weekdaysShort: "周日 周一 周二 周三 周四 周五 周六".split(" ")
+    });
+    // 生成一种特定格式的数组用于 ScrollPicker
+    // 形如 [['01', 1], ['02', 2], ... ['12', 12]]
+    function generateDateRange(start, end) {
+        return _.map(_.range(start, end + 1), function(i) {
+            var text = i > 9 ? i : "0" + i;
+            return [ text, i ];
+        });
+    }
+    return DatePicker;
+});
